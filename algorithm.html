@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>算法</title>
+</head>
+<body>
+	<h3>递归（fibonacci）、递推、冒泡排序、选择排序、插入排序、快速排序、归并排序、查找算法</h3>
+	<script type="text/javascript">
+		var arr = [11,3,1,4,5,100,33,12,15,10,6];
+		//递归 要点就是首先要找到递归的出口，不然就是死循环。不断的嵌套自己直到不能嵌套为止，在计算。
+		function fibonacci_array(num){
+			if(num == 1 || num == 2) return 1; //递归出口，不然会变成死循环。
+			return fibonacci_array(num - 1) + fibonacci_array(num - 2); //递归点。
+		}
+
+		//递推 从1开始往后推。
+		function fibonacci_array2(num){
+			var arr = [];
+			arr[1] = 1;
+			arr[2] = 1;
+
+			//for循环遍历与递推思想——即后一个数等于前两数的和。
+			for(var i=3; i<= num; i++){
+				arr[i] = arr[i - 1] + arr[i - 2];
+			}
+
+			return arr[num]; //这里为什么不能反悔arr[i],因为i++，这里的i = num + 1；
+		}
+
+
+		//冒泡排列
+		function bubble_sort(arr){
+			//第二个for每执行一次，就让最大的值在最右边了，也就是说其他数据的位置可能没有确定，但是最大的那个肯定确定了，在最右边。
+			for(var j = 0; j < arr.length; j++){
+				for(var i=0; i< arr.length - 1 -j; i++){
+					//两两对比大的右移动。
+					if(arr[i + 1] < arr[i]){
+						var temp = arr[i];
+						arr[i] = arr[i + 1];
+						arr[i+1] = temp;
+					}
+				}
+				console.log(arr);
+			}
+			return arr;
+		}
+
+		//由冒泡排列，可以引出一个数组找最大值得函数,不改变数组的数值
+		function find_max(arr){
+			for(var i = 0; i < arr.length; i++){
+				if(arr[i+1] < arr[i]){
+					var temp = arr[i]; //大的值保存在temp里
+					arr[i] = arr[i + 1]; //小值就可以放心赋值给大的值的位置了
+					arr[i + 1] = temp; //小值得位置保存大值。
+				}
+			}
+
+			var date = new Array(arr[arr.length - 1], arr)
+			return date;//返回一个二维数组，第一个元素是max，第二个是一个数组。
+		}
+
+		//选择排序，是冒泡排序的一种优化，因为遍历的次数更少了。
+		function choose_sort(arr){
+			//1、确定要交换的次数：一次只能找到一个最小的，需要找数组长度对应的次数。
+			for(var i = 0;i < arr.length; i++){
+				//2、假设当前第一个已经排好序
+				var min = i; 
+				//3、拿最小的与剩余的其他比较
+				for(var j = i + 1; j < arr.length;j++){
+					if(arr[j] < arr[min]){
+						//4、如果有if里所示，说明min不是最小，j才是，更换min。
+						min = j;
+					}
+				}
+
+				//5、交换当前选定的值与实际最小的元素值。
+				if (min != i) {
+					var temp = arr[i];
+					arr[i] = arr[min];
+					arr[min] = temp;
+				}
+			}
+			return arr;
+		}
+
+		//插入排序 假设第一个值是最小的从第一个值往后比较。
+		function insert_sort(arr){
+			//1、从数组的第二个数字往前走
+			for(var i = 1; i < arr.length; i++){
+				var temp = arr[i];
+				var flag = false;
+				//2、总是从紧挨i左边的位开始。直到数组第一位遍历，寻找。
+				for(var j = i - 1; j >=0;j--){
+					//3、发现有右边比左边小的情况，就将左边的值赋给右边的（右边的值在temp里。）
+					if(arr[j] > temp){
+						arr[j+1] = arr[j];
+						// arr[j] = temp; 
+						flag = true;
+
+					}else{
+						break;
+					}
+				}
+
+				//插入排序的精髓
+				if(flag){
+					arr[j + 1] = temp;//为什么是j+1,这里体现就是插入的意思。
+				}
+			}
+			return arr;
+		}
+
+		
+		//快速排序，对冒泡的改进，要用到递归,快速排序会很多资源，因为会同时调用很多的函数。
+		function quick_sort(arr){
+			var left = [];
+			var right = [];
+
+			if(arr.length <=1) return arr;//递归一定要有出口的，就是要追溯到第一个值
+
+			//将第一个元素拿到，与后面的所有的元素比较，小的放右边，大的放左边
+			for(var i = 1; i < arr.length; i++){
+				if(arr[i] < arr[0]){
+					left.push(arr[i]);
+				}else{
+					right.push(arr[i]);
+				}
+			}
+
+			left = quick_sort(left);//递归到无法分解。嵌套
+			right = quick_sort(right);
+
+			//将拿到的元素放进数组里，再合并两个数组，返回结果。
+			left.push(arr[0]);
+			var res  =  left.concat(right);
+			return res;
+		}
+
+		//二路归并排列,从中间分成两个数组。
+		function  merge_sort(arr){
+			if(arr.length <=1) return arr; //递归的出口
+			var mid = Math.floor(arr.length / 2); //将数组分成两组
+			var left = arr.slice(0,mid);
+			var right = arr.slice(mid);
+
+			left = merge_sort(left);
+			right = merge_sort(right);
+
+			var m = [];
+			while(left.length  && right.length){ //m = [] Boolean(m) //true放进while里面的一定要检查，不然就是死循环的用Boolean去检查
+				//小的数放进m，
+				m[m.length] = left[0] < right[0] ? left.shift() : right.shift();
+			}
+
+			return m.concat(left, right); 
+		}
+
+
+
+		//顺序查找法。
+		function check_order(arr, num){
+			for(var i = 0;  i < arr.length; i++){
+				if(arr[i] == num){
+					return i;
+				}
+			}
+			return false;
+		}
+		
+
+		//二分法查找(前提条件是arr是有顺序的)，折半。1、计算数组长度。2、确定左右指针的位置。3、找到中间位置。4、匹配。5、然后根据大小重定。
+		function check_merge(arr,res){
+			var right = arr.length;
+			var left = 0;
+
+			while(left <= right){
+				var mid = Math.floor((left +  right) / 2);
+				if(arr[mid] == res){
+					return mid + 1;
+				}
+
+				//数列是从左往右依次增大的。
+				if(arr[mid] < res){
+					left = mid + 1;
+				}else{
+					right = mid - 1;
+				}
+			}
+
+			return false;
+		}
+
+			
+	</script>
+</body>
+</html>
