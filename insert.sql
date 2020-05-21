@@ -58,8 +58,10 @@ UPDATE my_student SET gender = 2 WHERE stu_id IN('stu0002', "stu0004");
 INSERT INTO my_student VALUES("stu0005","小猪",1,"30",173,2);
 UPDATE my_student SET stu_age = 30,class_id = 2 WHERE stu_name = "小猪";	
 
-SELECT class_id,gender,group_concat(stu_name) FROM my_student GROUP BY class_id,gender;
+SELECT class_id,gender,group_concat(stu_name) FROM my_student GROUP BY class_id,gender;  --选择class_id，gender，拼接stu_name显示出来从my_student表中；并按class_id和性别归类。
 SELECT class_id,gender,group_concat(stu_name) FROM my_student GROUP BY class_id;
-SELECT class_id,COUNT(*),gender,group_concat(stu_name) FROM my_student GROUP BY class_id,gender;
+SELECT class_id,COUNT(*),gender,group_concat(stu_name) FROM my_student GROUP BY class_id,gender;--多分组
 
+--分组排序
+SELECT class_id,gender, COUNT(*),group_concat(stu_name) FROM my_student GROUP BY class_id asc,gender desc;
 
