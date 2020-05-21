@@ -43,6 +43,9 @@ SELECT * FROM my_student GROUP BY class_id;
 
 DELETE FROM my_student WHERE class_id IS null;
 
+ALTER TABLE my_student ADD class_id INT auto_increment PRIMARY key;
+
+ALTER TABLE my_student ADD stu_age int;
 ALTER TABLE my_student ADD stu_height TINYINT unsigned;
 
 UPDATE my_student SET stu_age = 20, stu_height = 165 WHERE stu_id = "stu0002";
