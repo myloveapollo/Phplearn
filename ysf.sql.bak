@@ -79,3 +79,29 @@ SELECT * FROM my_student WHERE class_id = ALL(SELECT class_id FROM my_class);
 mysqldump.exe -hlocalhost -P3306 -uroot -proot mydata > f:/xuhaofeng/mysqldump_data/mydata.sql
 --多表备份
 mysqldump.exe -hlocalhost -P3306 -uroot -proot mydata my_class my_student  > f:/xuhaofeng/mysqldump_data/my_tables.sql
+mysqldump.exe -hlocalhost -P3306 -uroot -proot mydata1 my_gbk my_int  > f:/xuhaofeng/mysqldump_data/my_gbk_int.sql
+
+
+--还原整库数据 注意：用另一个cmd运行
+mysql -uroot -proot mydata1 < f:/xuhaofeng/mysqldump_data/mydata.sql
+
+
+--还原表,注意：要在mysql -uroot -proot 登录的cmd运行
+source f:/xuhaofeng/mysqldump_data/my_gbk_int.sql;
+
+--用户管理mysql.user
+SELECT * FROM mysql.USER \G;
+
+--创建用户 create user 用户名 identified by "明文密码"。在mysql用户：用户名@主机地址。主机地址可以用：" 空/% "
+CREATE USER 'user1'@'%' identified BY "123456";
+
+--通常不这样做，谁都可以访问，也不需要密码
+CREATE USER user2;
+
+--删除用户 drop user 用户名@host;
+DROP USER user2;
+
+--1、修改密码 set password for 用户 =  password('新的明文密码')
+SET password FOR 'user1'@'%' = password('654321');
+
+--2、使用更新语句update --> update mysql.user set password = password('新明文密码') where user ='' and host= '';

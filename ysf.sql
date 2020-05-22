@@ -105,3 +105,24 @@ DROP USER user2;
 SET password FOR 'user1'@'%' = password('654321');
 
 --2、使用更新语句update --> update mysql.user set password = password('新明文密码') where user ='' and host= '';
+
+--授予权限-->给予了查看的权限 select可以用 all privileges 
+GRANT SELECT ON mydata.my_student TO "user1"@'%';
+GRANT ALL privileges ON mydata.my_student TO "user1"@'%';
+
+--取消权限
+REVOKE ALL privileges ON mydata.my_student FROM "user1"@"%";
+
+--刷新权限
+flush privileges;
+
+--停止服务器
+net stop mysql56
+
+--重新启动服务器，并跳过权限
+mysqld.exe --skip-grant-tables
+
+--修改root密码
+UPDATE mysql.USER SET password = password("root") WHERE user="root" AND host = 'localhost';
+
+net start mysql56
