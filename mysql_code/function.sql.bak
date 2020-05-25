@@ -54,19 +54,58 @@ DROP FUNCTION my_func2;
 --4、内部需要一个循环来实现迭代累加。5、循环内部需要进行条件判断控制：5的倍数。
 --创建函数、修改函数结束符
 --mysql 中没有++概念
+delimiter $$    --修改结束表示符
+CREATE FUNCTION my_sum(end_value int) returns INT   --创建函数 有形参需要给出数据类型，需要给定返回值类型
+BEGIN
+	DECLARE res INT DEFAULT 0;			-- 声明一个变量 指定数据类型与默人值
+	DECLARE i INT DEFAULT 1;
+	mywhile:WHILE i <= end_value do  -- while语句，因为后面要iterate（相当于break）所以要取名字 mywhile
+		IF i % 5 = 0 THEN			-- if 判断语句
+			SET i = i + 1;			--mysql 没有自加加++
+			iterate mywhile;		--相当于break
+		END if;						--if一定有要有end if 
+		SET res = res + i;			--给变量赋值用set 声明变量用declare
+		SET i = i + 1;
+	END WHILE mywhile;				--while要有end while mywhile 与之配套
+	RETURN res;						--函数一定要有返回值
+END									--begin对应的end
+$$									--修改的结束符号
+delimiter ;							--结束符号修改为原来的;
+
+
+mysql -uroot -proot
+--自己默写的函数
+delimiter $$
+CREATE FUNCTION my_sum(end_value INT) returns INT
+BEGIN
+	DECLARE res INT DEFAULT 0;
+	DECLARE i INT DEFAULT 1;
+	mywhile:WHILE i <= end_value do
+				IF i % 5 = 0 THEN
+					SET i = i + 1;
+					iterate mywhile;
+				END IF;
+				SET res = res + i;
+				SET i = i + 1;
+	END WHILE mywhile;
+	RETURN res;
+END
+$$
+delimiter ;
+
+--再默写一遍
 delimiter $$
 CREATE FUNCTION my_sum(end_value int) returns INT
 BEGIN
 	DECLARE res INT DEFAULT 0;
 	DECLARE i INT DEFAULT 1;
 	mywhile:WHILE i <= end_value do
-		IF i % 5 = 0 THEN
-			SET i = i + 1;
+		IF i%5 = 0 THEN
 			iterate mywhile;
-		END if;
+		END IF 
 		SET res = res + i;
 		SET i = i + 1;
-	END WHILE mywhile; 
+	END WHILE mywhile;
 	RETURN res;
 END
 $$

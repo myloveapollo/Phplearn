@@ -74,7 +74,7 @@ delimiter ;							--结束符号修改为原来的;
 
 
 mysql -uroot -proot
-
+--自己默写的函数
 delimiter $$
 CREATE FUNCTION my_sum(end_value INT) returns INT
 BEGIN
@@ -87,6 +87,25 @@ BEGIN
 				END IF;
 				SET res = res + i;
 				SET i = i + 1;
+	END WHILE mywhile;
+	RETURN res;
+END
+$$
+delimiter ;
+
+--再默写一遍
+delimiter $$
+CREATE FUNCTION my_sum(end_value int) returns INT
+BEGIN
+	DECLARE res INT DEFAULT 0;
+	DECLARE i INT DEFAULT 1;
+	mywhile:WHILE i <= end_value do
+		IF i % 5 = 0 THEN
+			SET i = i + 1;
+			iterate mywhile;
+		END IF; 
+		SET res = res + i;
+		SET i = i + 1;
 	END WHILE mywhile;
 	RETURN res;
 END
